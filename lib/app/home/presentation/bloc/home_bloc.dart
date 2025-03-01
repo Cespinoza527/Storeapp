@@ -17,13 +17,13 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     on<DeleteProductEvent>(_deleteProductEvent);
   }
 
-  void _getProductsEvent(GetProductsEvent event, Emitter<HomeState> emit) {
+  void _getProductsEvent(GetProductsEvent event, Emitter<HomeState> emit) async{
     late HomeState newState;
     try {
       newState = LoadingState();
       emit(newState);
 
-      final List<ProductModel> result = getProductsUseCase.invoke();
+      final List<ProductModel> result = await getProductsUseCase.invoke();
 
       if (result.isEmpty) {
         newState = EmptyState();
@@ -40,14 +40,14 @@ class HomeBloc extends Bloc<HomeEvent, HomeState> {
     emit(newState);
   }
 
-  void _deleteProductEvent(DeleteProductEvent event, Emitter<HomeState> emit) {
+  void _deleteProductEvent(DeleteProductEvent event, Emitter<HomeState> emit) async{
     late HomeState newState;
 
     try {
       newState = LoadingState();
       emit(newState);
 
-      final bool result = deleteProductsUseCase.invoke(event.id);
+      final bool result = await deleteProductsUseCase.invoke(event.id);
 
       if (result) {
         _getProductsEvent(GetProductsEvent(), emit);

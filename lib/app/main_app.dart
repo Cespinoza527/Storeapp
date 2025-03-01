@@ -1,3 +1,4 @@
+import 'package:appstore/app/form_product/presentation/pages/form_product_page.dart';
 import 'package:appstore/app/home/presentation/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -21,6 +22,11 @@ class MainApp extends StatelessWidget {
           path: '/',
           builder: (_, _) => HomePage(),
           name: "home",
+        ),
+                GoRoute(
+          path: '/form-product',
+          builder: (_, _) => FormProductPage(),
+          name: "form-product",
         ),
       ],
     );

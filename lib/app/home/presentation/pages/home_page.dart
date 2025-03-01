@@ -5,6 +5,7 @@ import 'package:appstore/app/home/presentation/bloc/home_state.dart';
 import 'package:appstore/app/home/presentation/model/product_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 //import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
@@ -28,6 +29,11 @@ class HomePage extends StatelessWidget {
             ],
           ),
           body: ProductListWidget(),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.lightBlue,
+            onPressed: () => GoRouter.of(context).pushNamed("form-product"),
+            child: Icon(Icons.add),
+          ),
         ),
       ),
     );
@@ -46,12 +52,12 @@ class _ProductListWidgetState extends State<ProductListWidget> {
   void initState() {
     super.initState();
     final bloc = context.read<HomeBloc>();
-    bloc.add(GetProductsEvent());
   }
 
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
+    bloc.add(GetProductsEvent());
     return BlocConsumer<HomeBloc, HomeState>(
       listener: (context, state) {
         switch (state) {
@@ -80,18 +86,20 @@ class _ProductListWidgetState extends State<ProductListWidget> {
       builder: (context, state) {
         switch (state) {
           case LoadingState():
-            return Center(
-              child: Column(
-                children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 20.0),
-                  Text(state.message),
-                ],
+            return Expanded(
+              child: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(),
+                    SizedBox(height: 20.0),
+                    Text(state.message),
+                  ],
+                ),
               ),
             );
           case EmptyState():
             return Center(child: Text("No se encontraron productos"));
-
           case LoadDataState():
             return ListView.builder(
               itemCount: state.model.products.length,
