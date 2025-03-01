@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:appstore/app/di/dependency_injection.dart';
 import 'package:appstore/app/login/presentation/bloc/login_bloc.dart';
 import 'package:appstore/app/login/presentation/bloc/login_event.dart';
 import 'package:appstore/app/login/presentation/bloc/login_state.dart';
@@ -14,7 +15,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: LoginBloc(),
+      value: DependencyInjection.serviceLocator.get<LoginBloc>(),
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: Column(
@@ -101,8 +102,6 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
               ],
             ));
             break;
-
-          default:
         }
       },
       child: BlocBuilder<LoginBloc, LoginState>(

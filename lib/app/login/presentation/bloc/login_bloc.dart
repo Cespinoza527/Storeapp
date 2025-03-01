@@ -4,13 +4,12 @@ import 'package:appstore/app/login/presentation/bloc/login_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  late final LoginUseCase _loginUseCase;
-  LoginBloc() : super(InitialState()) {
+final LoginUseCase loginUseCase;
+  LoginBloc({required this.loginUseCase}) : super(InitialState()) {
     on<EmailChangedEvent>(_emailChangedEvent);
     on<PasswordChangedEvent>(_passwordChangedEvent);
     on<SubmitEvent>(_submitEvent);
 
-    _loginUseCase = LoginUseCase();
   }
 
   void _emailChangedEvent(EmailChangedEvent event, Emitter<LoginState> emit) {
@@ -32,7 +31,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   void _submitEvent(SubmitEvent event, Emitter<LoginState> emit) {
-    final bool result = _loginUseCase.invoke(state.model);
+    final bool result = loginUseCase.invoke(state.model);
 
     late final LoginState newState;
     if (result) {

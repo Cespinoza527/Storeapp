@@ -10,16 +10,15 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final router = GoRouter(
-      initialLocation: '/',
       routes: [
-        GoRoute(path: '/', builder: (_, _) => LoginPage(), name: "login"),
+        GoRoute(path: '/login', builder: (_, _) => LoginPage(), name: "login"),
         GoRoute(
           path: '/sign-up',
           builder: (_, _) => SignupPage(),
           name: "sign-up",
         ),
         GoRoute(
-          path: '/home',
+          path: '/',
           builder: (_, _) => HomePage(),
           name: "home",
         ),

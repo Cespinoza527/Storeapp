@@ -1,25 +1,137 @@
+import 'package:appstore/app/di/dependency_injection.dart';
+import 'package:appstore/app/home/presentation/bloc/home_bloc.dart';
+import 'package:appstore/app/home/presentation/bloc/home_event.dart';
+import 'package:appstore/app/home/presentation/bloc/home_state.dart';
+import 'package:appstore/app/home/presentation/model/product_model.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+//import 'package:go_router/go_router.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("Página de Home", style: TextStyle(fontSize: 24.0)),
-            OutlinedButton(
-              onPressed: () {
-                GoRouter.of(context).pushReplacementNamed("login");
-              },
-              child: Text("Cerrar Sesión"),
+    return SafeArea(
+      child: BlocProvider.value(
+        value: DependencyInjection.serviceLocator.get<HomeBloc>(),
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.purple,
+            title: Text(
+              "Listado de Productos",
+              style: TextStyle(color: Colors.white),
             ),
-          ],
+            actions: [
+              Icon(Icons.logout, color: Colors.white),
+              SizedBox(width: 16.0),
+            ],
+          ),
+          body: ProductListWidget(),
         ),
+      ),
+    );
+  }
+}
+
+class ProductListWidget extends StatefulWidget {
+  const ProductListWidget({super.key});
+
+  @override
+  State<ProductListWidget> createState() => _ProductListWidgetState();
+}
+
+class _ProductListWidgetState extends State<ProductListWidget> {
+  @override
+  void initState() {
+    super.initState();
+    final bloc = context.read<HomeBloc>();
+    bloc.add(GetProductsEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
+    return BlocConsumer<HomeBloc, HomeState>(
+      listener: (context, state) {
+        switch (state) {
+          case LoadingState() || EmptyState() || LoadDataState():
+            break;
+          case HomeErrorState():
+            showDialog(
+              context: context,
+              builder:
+                  (BuildContext context) => AlertDialog(
+                    title: const Text('Error'),
+                    content: Text(state.message),
+                    actions: <Widget>[
+                      TextButton(
+                        onPressed: () => Navigator.pop(context, 'OK'),
+                        child: const Text('OK'),
+                      ),
+                    ],
+                  ),
+            );
+        }
+      },
+      builder: (context, state) {
+        switch (state) {
+          case LoadingState():
+            return Center(
+              child: Column(
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 20.0),
+                  Text(state.message),
+                ],
+              ),
+            );
+          case EmptyState():
+            return Center(child: Text("No se encontraron productos"));
+
+          case LoadDataState():
+            return ListView.builder(
+              itemCount: state.model.products.length,
+              itemBuilder:
+                  (context, index) =>
+                      ProductItemWidget(state.model.products[index]),
+            );
+
+          default:
+            return Container();
+        }
+      },
+    );
+  }
+}
+
+class ProductItemWidget extends StatelessWidget {
+  final ProductModel product;
+
+  const ProductItemWidget(this.product,{
+    super.key
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: Row(
+        children: [
+          Image.network(
+            product.urlIamage,
+            width: 150,
+            fit: BoxFit.contain,
+          ),
+          Expanded(
+            child: SizedBox(
+              height: 150,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [Text(product.name), Text("\$${product.price}")],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
