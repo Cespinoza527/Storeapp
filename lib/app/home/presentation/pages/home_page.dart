@@ -66,7 +66,10 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                     content: Text(state.message),
                     actions: <Widget>[
                       TextButton(
-                        onPressed: () => Navigator.pop(context, 'OK'),
+                        onPressed: () {
+                          Navigator.pop(context, 'OK');
+                          bloc.add(GetProductsEvent());
+                        },
                         child: const Text('OK'),
                       ),
                     ],
@@ -108,30 +111,52 @@ class _ProductListWidgetState extends State<ProductListWidget> {
 class ProductItemWidget extends StatelessWidget {
   final ProductModel product;
 
-  const ProductItemWidget(this.product,{
-    super.key
-  });
+  const ProductItemWidget(this.product, {super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Row(
-        children: [
-          Image.network(
-            product.urlIamage,
-            width: 150,
-            fit: BoxFit.contain,
+    final bloc = context.read<HomeBloc>();
+    return InkWell(
+      onLongPress:
+          () => showDialog(
+            context: context,
+            builder:
+                (dialogContext) => AlertDialog(
+                  title: const Text("Eliminación de producto"),
+                  content: Text("¿Está seguro de eliminar: ${product.name}?"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(
+                          dialogContext,
+                          'OK',
+                        ); // Usa dialogContext en lugar de context
+                        bloc.add(DeleteProductEvent(id: product.id));
+                      },
+                      child: const Text("OK"),
+                    ),
+                    TextButton(
+                      onPressed: () => Navigator.pop(dialogContext, "Cancelar"),
+                      child: const Text("Cancelar"),
+                    ),
+                  ],
+                ),
           ),
-          Expanded(
-            child: SizedBox(
-              height: 150,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [Text(product.name), Text("\$${product.price}")],
+      child: Card(
+        child: Row(
+          children: [
+            Image.network(product.urlIamage, width: 150, fit: BoxFit.contain),
+            Expanded(
+              child: SizedBox(
+                height: 150,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [Text(product.name), Text("\$${product.price}")],
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

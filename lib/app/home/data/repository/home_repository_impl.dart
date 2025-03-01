@@ -9,6 +9,14 @@ class HomeRepositoryImpl implements HomeRepository {
 
   @override
   List<ProductEntity> getProducts() {
-    return [ProductEntity(id: "123", name: "Producto Sorpresa", image: "https://cdn3d.iconscout.com/3d/premium/thumb/producto-5806313-4863042.png", price: 123000)];
+    return [
+      ProductEntity(
+        id: "123",
+        name: "Producto Sorpresa",
+        image:
+            "https://cdn3d.iconscout.com/3d/premium/thumb/producto-5806313-4863042.png",
+        price: 123000,
+      ),
+    ];
   }
 }
