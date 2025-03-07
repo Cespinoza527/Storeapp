@@ -17,16 +17,9 @@ class HomePage extends StatelessWidget {
       child: BlocProvider.value(
         value: DependencyInjection.serviceLocator.get<HomeBloc>(),
         child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.purple,
-            title: Text(
-              "Listado de Productos",
-              style: TextStyle(color: Colors.white),
-            ),
-            actions: [
-              Icon(Icons.logout, color: Colors.white),
-              SizedBox(width: 16.0),
-            ],
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(60.0),
+            child: AppBarWidget(),
           ),
           body: ProductListWidget(),
           floatingActionButton: FloatingActionButton(
@@ -40,6 +33,54 @@ class HomePage extends StatelessWidget {
   }
 }
 
+class AppBarWidget extends StatelessWidget {
+  const AppBarWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final bloc = context.read<HomeBloc>();
+    return AppBar(
+      backgroundColor: Colors.purple,
+      title: Text(
+        "Listado de Productos",
+        style: TextStyle(color: Colors.white),
+      ),
+      actions: [
+        InkWell(
+          onTap:
+              () => showDialog(
+                context: context,
+                builder:
+                    (dialogContext) => AlertDialog(
+                      title: const Text("Cerrar Sesión"),
+                      content: Text("¿Está seguro que desea cerrar sesión"),
+                      actions: <Widget>[
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(
+                              dialogContext,
+                              'OK',
+                            ); // Usa dialogContext en lugar de context
+                            bloc.add(LogoutEvent());
+                          },
+                          child: const Text("OK"),
+                        ),
+                        TextButton(
+                          onPressed:
+                              () => Navigator.pop(dialogContext, "Cancelar"),
+                          child: const Text("Cancelar"),
+                        ),
+                      ],
+                    ),
+              ),
+          child: Icon(Icons.logout, color: Colors.white),
+        ),
+        SizedBox(width: 16.0),
+      ],
+    );
+  }
+}
+
 class ProductListWidget extends StatefulWidget {
   const ProductListWidget({super.key});
 
@@ -48,12 +89,6 @@ class ProductListWidget extends StatefulWidget {
 }
 
 class _ProductListWidgetState extends State<ProductListWidget> {
-  @override
-  void initState() {
-    super.initState();
-    final bloc = context.read<HomeBloc>();
-  }
-
   @override
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
@@ -81,21 +116,21 @@ class _ProductListWidgetState extends State<ProductListWidget> {
                     ],
                   ),
             );
+          case LogoutState():
+            GoRouter.of(context).goNamed("login");
         }
       },
       builder: (context, state) {
         switch (state) {
           case LoadingState():
-            return Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(),
-                    SizedBox(height: 20.0),
-                    Text(state.message),
-                  ],
-                ),
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  SizedBox(height: 20.0),
+                  Text(state.message),
+                ],
               ),
             );
           case EmptyState():
@@ -125,6 +160,10 @@ class ProductItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final bloc = context.read<HomeBloc>();
     return InkWell(
+      onTap:
+          () => GoRouter.of(
+            context,
+          ).pushNamed("form-product-u", pathParameters: {"id": product.id}),
       onLongPress:
           () => showDialog(
             context: context,
@@ -153,7 +192,7 @@ class ProductItemWidget extends StatelessWidget {
       child: Card(
         child: Row(
           children: [
-            Image.network(product.urlIamage, width: 150, fit: BoxFit.contain),
+            Image.network(product.urlImage, width: 150, fit: BoxFit.contain),
             Expanded(
               child: SizedBox(
                 height: 150,

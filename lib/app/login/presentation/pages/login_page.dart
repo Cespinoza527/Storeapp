@@ -117,6 +117,7 @@ class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
                 key: keyForm,
                 child: Column(
                   children: [
+                    Text(state.model.email),
                     TextFormField(
                       onChanged:
                           (value) => setState(() {

@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 final class ProductService {
   final Dio dio;
   final String _baseUrl =
-      "https://storeappdamo2024-default-rtdb.firebaseio.com";
+      "https://storeappdamo2024-a1eba-default-rtdb.firebaseio.com";
 
   ProductService({required this.dio});
 
@@ -12,7 +12,7 @@ final class ProductService {
     final List<ProductDataModel> products = [];
 
     try {
-      final Response<Map> response = await dio.get("$_baseUrl/productos.json");
+      final Response<Map> response = await dio.get("$_baseUrl/products.json");
 
       if (response.data != null) {
         response.data?.forEach((key, value) {
@@ -29,6 +29,42 @@ final class ProductService {
   Future<bool> delete(String id) async {
     try {
       await dio.delete("$_baseUrl/products/$id.json");
+    } catch (e) {
+      throw (Exception("Error: $e"));
+    }
+    return true;
+  }
+
+  Future<bool> add(ProductDataModel product) async {
+    try {
+      await dio.post("$_baseUrl/products.json", data: product.toJson());
+    } catch (e) {
+      throw (Exception(e));
+    }
+    return true;
+  }
+
+  Future<ProductDataModel> get(String id) async {
+    late final ProductDataModel product;
+    try {
+      final Response<Map<String, dynamic>> response = await dio.get(
+        "$_baseUrl/products/$id.json",
+      );
+      if (response.data != null) {
+        product = ProductDataModel.fromJson(id, response.data!);
+      }
+    } catch (e) {
+      throw (Exception(e));
+    }
+    return product;
+  }
+
+  Future<bool> update(ProductDataModel productDataModel) async {
+    try {
+      await dio.patch(
+        "$_baseUrl/products/${productDataModel.id}.json",
+        data: productDataModel.toJson(),
+      );
     } catch (e) {
       throw (Exception(e));
     }

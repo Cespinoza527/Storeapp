@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:appstore/app/login/presentation/pages/login_page.dart';
 import 'package:appstore/app/signup/presentation/pages/signup_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
@@ -12,7 +13,19 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final router = GoRouter(
       routes: [
-        GoRoute(path: '/login', builder: (_, _) => LoginPage(), name: "login"),
+        GoRoute(
+          path: '/login',
+          builder: (_, _) => LoginPage(),
+          name: "login",
+          redirect: (context, state) async {
+            final prefs = await SharedPreferences.getInstance();
+            final bool authenticated = prefs.getBool("login") ?? false;
+            if (authenticated) {
+              return "/";
+            }
+            return null;
+          },
+        ),
         GoRoute(
           path: '/sign-up',
           builder: (_, _) => SignupPage(),
@@ -22,15 +35,29 @@ class MainApp extends StatelessWidget {
           path: '/',
           builder: (_, _) => HomePage(),
           name: "home",
+          redirect: (context, state) async{
+            final prefs = await SharedPreferences.getInstance();
+            final bool authenticated = prefs.getBool("login") ?? false;
+            if (!authenticated) {
+              return "/login";
+            }
+            return null;
+          },
         ),
-                GoRoute(
+        GoRoute(
           path: '/form-product',
           builder: (_, _) => FormProductPage(),
           name: "form-product",
         ),
+        GoRoute(
+          path: '/form-product/:id',
+          builder:
+              (_, state) => FormProductPage(id: state.pathParameters["id"]),
+          name: "form-product-u",
+        ),
       ],
     );
-    return MaterialApp.router(routerConfig: router);
+    return MaterialApp.router(routerConfig: router, debugShowCheckedModeBanner: false,);
   }
 }
 

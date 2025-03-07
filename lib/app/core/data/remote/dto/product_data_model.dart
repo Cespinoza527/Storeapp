@@ -13,18 +13,21 @@ class ProductDataModel {
     required this.imageUrl,
   });
 
-  ProductDataModel.fromJson(String this.id, Map<String, dynamic> json) {
+  ProductDataModel.fromJson(this.id, Map<String, dynamic> json) {
     name = json["name"];
     price = json["price"];
     imageUrl = json["image"];
   }
 
   ProductEntity toEntity() {
-    return ProductEntity(
-      id: id ,
-      name: name,
-      image: imageUrl,
-      price: price,
-    );
+    return ProductEntity(id: id, name: name, image: imageUrl, price: price);
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      "name":name,
+      "price":price,
+      "image":imageUrl,
+    };
   }
 }

@@ -8,7 +8,7 @@ class LoginUseCase {
 
   LoginUseCase({required this.loginRepository});
 
-  bool invoke(LoginForModel loginForModel) {
+  Future <bool> invoke(LoginForModel loginForModel) {
     final LoginEntity data = loginForModel.toEntity();
 
     return loginRepository.login(data);

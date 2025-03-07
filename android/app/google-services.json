@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "684736173363",
+    "firebase_url": "https://storeappdamo2024-a1eba-default-rtdb.firebaseio.com",
+    "project_id": "storeappdamo2024-a1eba",
+    "storage_bucket": "storeappdamo2024-a1eba.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:684736173363:android:fc72f0df9eaafc5f5e1a46",
+        "android_client_info": {
+          "package_name": "com.example.appstore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmYHtu6L8JS-3PfLXz3lXgXb38kZ4_yXY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
