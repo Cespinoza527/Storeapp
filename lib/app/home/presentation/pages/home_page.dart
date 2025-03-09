@@ -27,6 +27,24 @@ class HomePage extends StatelessWidget {
             onPressed: () => GoRouter.of(context).pushNamed("form-product"),
             child: Icon(Icons.add),
           ),
+
+        bottomNavigationBar: BottomAppBar(
+          shape: CircularNotchedRectangle(), // Hace espacio para el FAB
+          notchMargin: 8.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                icon: Icon(Icons.shopping_bag_rounded),
+                onPressed: () => GoRouter.of(context).go("/"),
+              ),
+              IconButton(
+                icon: Icon(Icons.people_rounded),
+                onPressed: () => GoRouter.of(context).go("/home-account"),
+              ),
+            ],
+          ),
+        )
         ),
       ),
     );

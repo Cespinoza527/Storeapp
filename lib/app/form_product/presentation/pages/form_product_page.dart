@@ -1,4 +1,4 @@
-import 'dart:async';
+
 
 import 'package:appstore/app/di/dependency_injection.dart';
 import 'package:appstore/app/form_product/presentation/bloc/form_product_bloc.dart';
@@ -37,8 +37,6 @@ class BodyLoginWidget extends StatefulWidget {
 }
 
 class _BodyLoginWidgetState extends State<BodyLoginWidget> with LoginMixin {
-  bool _showPassword = false;
-  Timer? _autoShowTimer;
   final keyForm = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {

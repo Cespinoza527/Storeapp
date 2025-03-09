@@ -1,4 +1,5 @@
 import 'package:appstore/app/core/data/remote/service/product_service.dart';
+import 'package:appstore/app/core/data/remote/service/user_service.dart';
 import 'package:appstore/app/core/data/repository/session_repository_impl.dart';
 import 'package:appstore/app/core/domain/repository/session_repository.dart';
 import 'package:appstore/app/core/domain/use_case/logout_use_case.dart';
@@ -13,6 +14,10 @@ import 'package:appstore/app/home/domain/repository/home_repository.dart';
 import 'package:appstore/app/home/domain/use_case/delete_products_use_case.dart';
 import 'package:appstore/app/home/domain/use_case/get_products_use_case.dart';
 import 'package:appstore/app/home/presentation/bloc/home_bloc.dart';
+import 'package:appstore/app/home_account/data/repository/home_account_repository_impl.dart';
+import 'package:appstore/app/home_account/domain/repository/home_account_repository.dart';
+import 'package:appstore/app/home_account/domain/use_case/get_users_use_case.dart';
+import 'package:appstore/app/home_account/presentation/bloc/home_account_bloc.dart';
 import 'package:appstore/app/login/data/repository/login_repository_impl.dart';
 import 'package:appstore/app/login/domain/repository/login_repository.dart';
 import 'package:appstore/app/login/domain/use_case/login_use_case.dart';
@@ -31,6 +36,10 @@ final class DependencyInjection {
       () => ProductService(dio: serviceLocator.get()),
     );
 
+        serviceLocator.registerFactory<UserService>(
+      () => UserService(dio: serviceLocator.get()),
+    );
+
         serviceLocator.registerFactory<SessionRepository>(
       () => SessionRepositoryImpl(),
     );
@@ -46,23 +55,6 @@ final class DependencyInjection {
     );
     serviceLocator.registerFactory<LoginBloc>(
       () => LoginBloc(loginUseCase: serviceLocator.get()),
-    );
-
-    serviceLocator.registerFactory<HomeRepository>(
-      () => HomeRepositoryImpl(productService: serviceLocator.get()),
-    );
-    serviceLocator.registerFactory<GetProductsUseCase>(
-      () => GetProductsUseCase(homeRepository: serviceLocator.get()),
-    );
-    serviceLocator.registerFactory<DeleteProductsUseCase>(
-      () => DeleteProductsUseCase(homeRepository: serviceLocator.get()),
-    );
-    serviceLocator.registerFactory<HomeBloc>(
-      () => HomeBloc(
-        getProductsUseCase: serviceLocator.get(),
-        deleteProductsUseCase: serviceLocator.get(),
-        logoutUseCase: serviceLocator.get(),
-      ),
     );
 
     serviceLocator.registerFactory<FormProductRepository>(
@@ -86,5 +78,37 @@ final class DependencyInjection {
         updateProductUseCase: serviceLocator.get(),
       ),
     );
+
+    serviceLocator.registerFactory<HomeAccountRepository>(
+      () => HomeAccountRepositoryImpl(userService: serviceLocator.get()),
+    );
+    serviceLocator.registerFactory<GetUsersUseCase>(
+      () => GetUsersUseCase(homeAccountRepository: serviceLocator.get()),
+    );
+    serviceLocator.registerFactory<HomeAccountBloc>(
+      () => HomeAccountBloc(
+        getUsersUseCase: serviceLocator.get(),
+        logoutUseCase: serviceLocator.get(),
+      ),
+    );
+
+
+        serviceLocator.registerFactory<HomeRepository>(
+      () => HomeRepositoryImpl(productService: serviceLocator.get()),
+    );
+    serviceLocator.registerFactory<GetProductsUseCase>(
+      () => GetProductsUseCase(homeRepository: serviceLocator.get()),
+    );
+    serviceLocator.registerFactory<DeleteProductsUseCase>(
+      () => DeleteProductsUseCase(homeRepository: serviceLocator.get()),
+    );
+    serviceLocator.registerFactory<HomeBloc>(
+      () => HomeBloc(
+        getProductsUseCase: serviceLocator.get(),
+        deleteProductsUseCase: serviceLocator.get(),
+        logoutUseCase: serviceLocator.get(),
+      ),
+    );
+
   }
 }
