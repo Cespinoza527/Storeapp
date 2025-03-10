@@ -22,6 +22,10 @@ import 'package:appstore/app/login/data/repository/login_repository_impl.dart';
 import 'package:appstore/app/login/domain/repository/login_repository.dart';
 import 'package:appstore/app/login/domain/use_case/login_use_case.dart';
 import 'package:appstore/app/login/presentation/bloc/login_bloc.dart';
+import 'package:appstore/app/signup/data/repository/signup_repository_impl.dart';
+import 'package:appstore/app/signup/domain/repository/signup_repository.dart';
+import 'package:appstore/app/signup/domain/use_case/add_user_use_case.dart';
+import 'package:appstore/app/signup/presentation/bloc/signup_bloc.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -76,6 +80,24 @@ final class DependencyInjection {
         addProductUseCase: serviceLocator.get(),
         getProductUseCase: serviceLocator.get(),
         updateProductUseCase: serviceLocator.get(),
+      ),
+    );
+
+
+ serviceLocator.registerFactory<SignupRepository>(
+      () => SignupRepositoryImpl(userService: serviceLocator.get()),
+    );
+
+
+    serviceLocator.registerFactory<AddUserUseCase>(
+      () => AddUserUseCase(signupRepository: serviceLocator.get()),
+    );
+
+
+    serviceLocator.registerFactory<SignupBloc>(
+      () => SignupBloc(
+        addUserUseCase: serviceLocator.get(),
+        //getUserUseCase: serviceLocator.get(),
       ),
     );
 
